@@ -9,10 +9,6 @@ char* Userdata = "User.txt"; //User database text file
 char* AmountOfPaper = "paper.txt";
 char* AmountOfInk = "ink.txt";
 
-int CountPaper(FILE* cFile);
-int CountInk(FILE* cFile, int pline);
-void CheckPrintData(PDATA pd);
-
 typedef struct {
 	char* user; // user name
 	int RP; // required paper
@@ -50,6 +46,10 @@ typedef struct {
 }DDATA;
 DDATA now_display;
 typedef enum{ PRINTING = 0, WAITING, RECHARGING } STATUS;
+
+int CountPaper(FILE* cFile);
+int CountInk(FILE* cFile, int pline);
+void CheckPrintData(PDATA pd);
 
 void Display(){
 	int i;
