@@ -9,6 +9,10 @@ char* Userdata = "User.txt"; //User database text file
 char* AmountOfPaper = "paper.txt";
 char* AmountOfInk = "ink.txt";
 
+int CountPaper(FILE* cFile);
+int CountInk(FILE* cFile, int pline);
+void CheckPrintData(PDATA pd);
+
 typedef struct {
 	char* user; // user name
 	int RP; // required paper
@@ -19,10 +23,6 @@ typedef struct {
 PDATA Queue[5];
 int top = 0; //Top on Queue
 int end = 0; //end on Queue
-
-int CountPaper(FILE* cFile);
-int CountInk(FILE* cFile, int pline);
-void CheckPrintData(PDATA pd);
 
 struct STATUS
 {
@@ -107,6 +107,7 @@ void PreProcess(char* command[2]) {
 	FILE* cFile = NULL;
 	cFile = fopen(command[1], "r");
 	int RP = CountPaper(cFile);
+	cFile = fopen(command[1], "r");
 	int RI = CountInk(cFile, RP);
 
 	PDATA pd;
@@ -172,17 +173,17 @@ void CheckPrintData(PDATA pd) {
 			// Process and Data Lobby part
 		}
 		else {
-			printf("Print Queue is full");
+			printf("Print Queue is full\n");
 		}
 	}
 	else if (EP < pd.RP && EI < pd.RI) {
-		printf("paper and ink low");
+		printf("paper and ink low\n");
 	}
 	else if (EP < pd.RP) {
-		printf("paper low");
+		printf("paper low\n");
 	}
 	else if (EI < pd.RI) {
-		printf("ink low");
+		printf("ink low\n");
 	}
 }
 void DataLobby(){
