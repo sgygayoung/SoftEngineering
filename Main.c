@@ -17,8 +17,12 @@ typedef struct {
 	char* path; // file path
 }PDATA; // print data struct
 PDATA Queue[5];
-int top_queue = 0; //Top on Queue
-int end_queue = 0; //end on Queue
+int top = 0; //Top on Queue
+int end = 0; //end on Queue
+
+int CountPaper(FILE* cFile);
+int CountInk(FILE* cFile, int pline);
+void CheckPrintData(PDATA pd);
 
 struct STATUS
 {
@@ -72,17 +76,17 @@ void Display(){
 			printf("                    Print                \n");
 			printf("戍式式式式式式式式式式式式式式式式式式式式式式式式式式式式扣\n");
 			printf("  Printing      弛");
-			printf("%s %d/%d   \n", Queue[top].user, Queue[top].now, Queue[top].ep);
+			printf("%s %d/%d   \n", Queue[top].user, Queue[top].now, Queue[top].RP);
 			printf("戍式式式式式式式式式式式式式式式式式式式式式式式式式式式式扣\n");
 			printf("  Wait Queue    弛");
 			if (end - 1 > top + 1){ //wait more than one
 				for (i= top + 1; i < end - 1; i++)
-					printf("%s %d,", Queue[i].user, Queue[i].ep);
-				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].ep);
+					printf("%s %d,", Queue[i].user, Queue[i].RP);
+				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
 
 			}
 			else if (end - 1 == top + 1){ //waiting only one
-				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].ep);
+				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
 			}
 			else //no wait
 				printf("\n");
@@ -104,7 +108,6 @@ void PreProcess(char* command[2]) {
 	cFile = fopen(command[1], "r");
 	int RP = CountPaper(cFile);
 	int RI = CountInk(cFile, RP);
-	//printf("Preprocess ep: %d, ei: %d\n", ep, ei);
 
 	PDATA pd;
 	pd.user = command[0];
@@ -162,8 +165,8 @@ void CheckPrintData(PDATA pd) {
 	fclose(pFile);
 	fclose(iFile);
 	if (EP >= pd.RP && EI >= pd.RI) {
-		if (end_queue < 5) { // this file can be printed
-			Queue[end_queue++] = pd;
+		if (end < 5) { // this file can be printed
+			Queue[end++] = pd;
 			// Process and Data Lobby part
 
 			// Process and Data Lobby part
@@ -328,13 +331,13 @@ int main(void){
 	//pthread_join(re, &s);
 
 	now_display.status = "printing";
-	Queue[0].ep = 5;
+	Queue[0].RP = 5;
 	Queue[0].now = 0;
 	Queue[0].user = "user1";
 	top = 0;
 	end = 1;
 	for (i = 1; i < 4; i++){
-		Queue[i].ep = i+5;
+		Queue[i].RP = i+5;
 		Queue[i].now = 0;
 		Queue[i].user = "user";
 		end++;
