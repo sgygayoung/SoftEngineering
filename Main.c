@@ -353,7 +353,9 @@ int main(void){
 			 return EXIT_FAILURE;
 	 }
 
-	 int err = pthread_create(&(tid[i]), NULL, &doSomeThing, NULL);
+	 //To Do : fork routine here.
+
+	 int err = pthread_create(&(tid[i]), NULL, &DataLobby, 0); //Have to change "0" to the child pid
 
 	 //If it fails, we can't go any further.
    if (err != 0) {
