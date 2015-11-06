@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<time.h>
-#include<pthread.h>
+/* #include<pthread.h> */
 #include<Windows.h>
 
 #define MAX_INK 3000
@@ -9,7 +9,7 @@
 char* Userdata = "User.txt"; //User database text file
 char* AmountOfPaper = "paper.txt";
 char* AmountOfInk = "ink.txt";
-pthread_mutex_t lock;
+/* pthread_mutex_t lock; */
 
 typedef struct {
 	char* user; // user name
@@ -169,9 +169,9 @@ void CheckPrintData(PDATA pd) {
 	fclose(iFile);
 	if (EP >= pd.RP && EI >= pd.RI) {
 		if (end < 5) { // this file can be printed
-			pthread_mutex_lock(&lock);
+			/* pthread_mutex_lock(&lock); */
 			Queue[end++] = pd;
-			pthread_mutex_unlock(&lock);
+			/* pthread_mutex_unlock(&lock); */
 			// Process and Data Lobby part
 
 			// Process and Data Lobby part
@@ -194,7 +194,7 @@ void CheckPrintData(PDATA pd) {
 //PID is needed in order to send data to the print process.
 //Mutex are needed to R/W the queue without conflicting with main thread.
 void DataLobby(int pid){
-	pthread_mutex_lock(&lock);
+	/* pthread_mutex_lock(&lock); */
 	int i = 0;
 	int j = 0;
 	PDATA tmp_queue[5];
@@ -204,7 +204,7 @@ void DataLobby(int pid){
 		++i;
 	}
 
-	pthread_mutex_unlock(&lock);
+	/* pthread_mutex_unlock(&lock); */
 }
 
 int RejectPrint(){
@@ -347,38 +347,38 @@ int main(void){
 	Display();
 	Sleep(1000);
 
-	if (pthread_mutex_init(&lock, NULL) != 0)
-	{
-		printf("\n mutex init failed\n");
-		return EXIT_FAILURE;
-	}
+	/* if (pthread_mutex_init(&lock, NULL) != 0) */
+	/* { */
+	/* 	printf("\n mutex init failed\n"); */
+	/* 	return EXIT_FAILURE; */
+	/* } */
 
-	//To Do : fork routine here.
-	pid_t pid = fork();
+	/* //To Do : fork routine here. */
+	/* pid_t pid = fork(); */
 
-	if (pid == 0)
-	{
-		// child process
-		printf("child process\n");
-	}
-	else if (pid > 0)
-	{
-		printf("parent process\n");
-	}
-	else
-	{
-		// fork failed
-		printf("fork() failed!\n");
-		return EXIT_FAILURE;
-	}
+	/* if (pid == 0) */
+	/* { */
+	/* 	// child process */
+	/* 	printf("child process\n"); */
+	/* } */
+	/* else if (pid > 0) */
+	/* { */
+	/* 	printf("parent process\n"); */
+	/* } */
+	/* else */
+	/* { */
+	/* 	// fork failed */
+	/* 	printf("fork() failed!\n"); */
+	/* 	return EXIT_FAILURE; */
+	/* } */
 
-	int err = pthread_create(&(tid[i]), NULL, &DataLobby, 0); //Have to change "0" to the child pid
+	/* int err = pthread_create(&(tid[i]), NULL, &DataLobby, 0); //Have to change "0" to the child pid */
 
-	//If it fails, we can't go any further.
-	if (err != 0) {
-		printf("\ncan't create thread :[%s]", strerror(err));
-		return EXIT_FAILURE;
-	}
+	/* //If it fails, we can't go any further. */
+	/* if (err != 0) { */
+	/* 	printf("\ncan't create thread :[%s]", strerror(err)); */
+	/* 	return EXIT_FAILURE; */
+	/* } */
 	//int a = pthread_create(&Dthread, NULL, Display, NULL);
 	//pthread_join(re, &s);
 
@@ -411,6 +411,6 @@ int main(void){
 	Display();
 	Sleep(1000);
 
-	pthread_mutex_destroy(&lock);
+	/* pthread_mutex_destroy(&lock); */
 	return EXIT_SUCCESS;
 }
