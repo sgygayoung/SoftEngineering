@@ -56,49 +56,49 @@ void CheckPrintData(PDATA pd);
 void Display(){
 	int i;
 	//while (1){
-		//system("alias clear='printf "\033c"'");
-		system("clear");
-		time_t timer;
-		struct tm *t;
-		timer = time(NULL);
-		t = localtime(&timer);
-		sprintf(now_display.time, "%2d:%2d", t->tm_hour, t->tm_min);
+	//system("alias clear='printf "\033c"'");
+	system("clear");
+	time_t timer;
+	struct tm *t;
+	timer = time(NULL);
+	t = localtime(&timer);
+	sprintf(now_display.time, "%2d:%2d", t->tm_hour, t->tm_min);
+	printf("������������������������������������������������������������\n");
+	printf("                    Display                \n");
+	printf("������������������������������������������������������������\n");
+	printf("  Remain Paper  ��%3d              \n", now_display.paper);
+	printf("������������������������������������������������������������\n");
+	printf("  Remain Ink    ��%4d             \n", now_display.ink);
+	printf("������������������������������������������������������������\n");
+	printf("  Time          ��%s            \n", now_display.time);
+	printf("������������������������������������������������������������\n");
+	printf("  Status        ��%s\n", now_display.status);
+	if (strcmp("printing", now_display.status) == 0){
 		printf("������������������������������������������������������������\n");
-		printf("                    Display                \n");
+		printf("                    Print                \n");
 		printf("������������������������������������������������������������\n");
-		printf("  Remain Paper  ��%3d              \n", now_display.paper);
+		printf("  Printing      ��");
+		printf("%s %d/%d   \n", Queue[top].user, Queue[top].now, Queue[top].RP);
 		printf("������������������������������������������������������������\n");
-		printf("  Remain Ink    ��%4d             \n", now_display.ink);
-		printf("������������������������������������������������������������\n");
-		printf("  Time          ��%s            \n", now_display.time);
-		printf("������������������������������������������������������������\n");
-		printf("  Status        ��%s\n", now_display.status);
-		if (strcmp("printing", now_display.status) == 0){
-			printf("������������������������������������������������������������\n");
-			printf("                    Print                \n");
-			printf("������������������������������������������������������������\n");
-			printf("  Printing      ��");
-			printf("%s %d/%d   \n", Queue[top].user, Queue[top].now, Queue[top].RP);
-			printf("������������������������������������������������������������\n");
-			printf("  Wait Queue    ��");
-			if (end - 1 > top + 1){ //wait more than one
-				for (i= top + 1; i < end - 1; i++)
-					printf("%s %d,", Queue[i].user, Queue[i].RP);
-				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
+		printf("  Wait Queue    ��");
+		if (end - 1 > top + 1){ //wait more than one
+			for (i= top + 1; i < end - 1; i++)
+			printf("%s %d,", Queue[i].user, Queue[i].RP);
+			printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
 
-			}
-			else if (end - 1 == top + 1){ //waiting only one
-				printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
-			}
-			else //no wait
-				printf("\n");
-			printf("������������������������������������������������������������\n");
 		}
-		else{
-			printf("������������������������������������������������������������\n");
+		else if (end - 1 == top + 1){ //waiting only one
+			printf("%s %d\n", Queue[end - 1].user, Queue[end - 1].RP);
 		}
-		printf("    %s\n", now_display.message);
-		//Sleep(1000); //1min
+		else //no wait
+		printf("\n");
+		printf("������������������������������������������������������������\n");
+	}
+	else{
+		printf("������������������������������������������������������������\n");
+	}
+	printf("    %s\n", now_display.message);
+	//Sleep(1000); //1min
 	//}
 }
 int CommandDistributor(char* command){
@@ -348,20 +348,37 @@ int main(void){
 	Sleep(1000);
 
 	if (pthread_mutex_init(&lock, NULL) != 0)
-	 {
-			 printf("\n mutex init failed\n");
-			 return EXIT_FAILURE;
-	 }
+	{
+		printf("\n mutex init failed\n");
+		return EXIT_FAILURE;
+	}
 
-	 //To Do : fork routine here.
+	//To Do : fork routine here.
+	pid_t pid = fork();
 
-	 int err = pthread_create(&(tid[i]), NULL, &DataLobby, 0); //Have to change "0" to the child pid
+	if (pid == 0)
+	{
+		// child process
+		printf("child process\n");
+	}
+	else if (pid > 0)
+	{
+		printf("parent process\n");
+	}
+	else
+	{
+		// fork failed
+		printf("fork() failed!\n");
+		return EXIT_FAILURE;
+	}
 
-	 //If it fails, we can't go any further.
-   if (err != 0) {
-      printf("\ncan't create thread :[%s]", strerror(err));
-			return EXIT_FAILURE;
-	 }
+	int err = pthread_create(&(tid[i]), NULL, &DataLobby, 0); //Have to change "0" to the child pid
+
+	//If it fails, we can't go any further.
+	if (err != 0) {
+		printf("\ncan't create thread :[%s]", strerror(err));
+		return EXIT_FAILURE;
+	}
 	//int a = pthread_create(&Dthread, NULL, Display, NULL);
 	//pthread_join(re, &s);
 
