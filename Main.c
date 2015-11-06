@@ -169,7 +169,9 @@ void CheckPrintData(PDATA pd) {
 	fclose(iFile);
 	if (EP >= pd.RP && EI >= pd.RI) {
 		if (end < 5) { // this file can be printed
+			pthread_mutex_lock(&lock);
 			Queue[end++] = pd;
+			pthread_mutex_unlock(&lock);
 			// Process and Data Lobby part
 
 			// Process and Data Lobby part
@@ -192,8 +194,19 @@ void CheckPrintData(PDATA pd) {
 //PID is needed in order to send data to the print process.
 //Mutex are needed to R/W the queue without conflicting with main thread.
 void DataLobby(int pid){
+	pthread_mutex_lock(&lock);
+	int i = 0;
+	int j = 0;
+	PDATA tmp_queue[5];
 
+	while (++j < 5) {
+		tmp_queue[i] = Queue[j]
+		++i;
+	}
+
+	pthread_mutex_unlock(&lock);
 }
+
 int RejectPrint(){
 
 }
@@ -337,12 +350,16 @@ int main(void){
 	if (pthread_mutex_init(&lock, NULL) != 0)
 	 {
 			 printf("\n mutex init failed\n");
-			 return 1;
+			 return EXIT_FAILURE;
 	 }
 
 	 int err = pthread_create(&(tid[i]), NULL, &doSomeThing, NULL);
-   if (err != 0)
+
+	 //If it fails, we can't go any further.
+   if (err != 0) {
       printf("\ncan't create thread :[%s]", strerror(err));
+			return EXIT_FAILURE;
+	 }
 	//int a = pthread_create(&Dthread, NULL, Display, NULL);
 	//pthread_join(re, &s);
 
